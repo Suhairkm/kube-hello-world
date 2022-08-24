@@ -4,6 +4,9 @@ metadata:
   name: hello-world
 spec:
   replicas: 1 
+  selector:
+   matchLabels:
+    app: hello-world
   template:
     metadata:
       labels:
@@ -11,7 +14,7 @@ spec:
     spec:
       containers:
       - name: hello-world-pod
-        image: arungupta/helloworld-spring-boot:latest
+        image: abyalias/docker1234:latest
         ports: 
         - containerPort: 80
         - containerPort: 443
