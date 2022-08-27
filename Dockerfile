@@ -1,13 +1,6 @@
-FROM openjdk:8-alpine
-
-# Required for starting application up.
-RUN apk update && apk add /bin/sh
-
-RUN mkdir -p /opt/app
-ENV PROJECT_HOME /opt/app
-
-COPY target/spring-boot-mongo-1.0.jar $PROJECT_HOME/spring-boot-mongo.jar
-
-WORKDIR $PROJECT_HOME
+FROM openjdk:11-slim
 EXPOSE 8080
-CMD ["java" ,"-jar","./spring-boot-mongo.jar"]
+RUN mkdir /app
+WORKDIR /app
+COPY target/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
