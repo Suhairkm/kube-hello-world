@@ -1,114 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.webapp</groupId>
-    <artifactId>my-webApp</artifactId>
-    <version>1.0</version>
-    <name>docker-spring-boot</name>
-    <url></url>
+    <groupId>com.example.sonar</groupId>
+    <!-- it's recommended to follow the pattern "sonar-{key}-plugin", for example "sonar-myphp-plugin" -->
+    <artifactId>custom-plugin</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
-    </parent>
+    <!-- this is important for sonar-packaging-maven-plugin -->
+    <packaging>sonar-plugin</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonarqube.version>9.2.1.49989</sonarqube.version>
+        <sonarjava.version>7.6.0.28201</sonarjava.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <java.version>11</java.version>
-        <project.test.result.directory>${project.build.directory}/test-results</project.test.result.directory>
-        <sonar.host.url>http://18.205.192.27:9000/</sonar.host.url>
-        <sonar.login>admin</sonar.login>
-        <sonar.password>admin123</sonar.password>
-        <sonar.projectBaseDir>/home/ubuntu/sonar</sonar.projectBaseDir>
+        <sonar.plugin.api.version>9.2.1.49989</sonar.plugin.api.version>
+        <java.plugin.version>7.6.0.28201</java.plugin.version>
     </properties>
 
-    <dependencies>
 
+    <dependencies>
+        <!-- sonar plugin api -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.sonarsource.sonarqube</groupId>
+            <artifactId>sonar-plugin-api</artifactId>
+            <version>9.2.1.49989</version>
+            <scope>provided</scope>
         </dependency>
+        <!-- junit -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
         </dependency>
+        <!-- sonar-java-plugin -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>org.sonarsource.java</groupId>
+            <artifactId>sonar-java-plugin</artifactId>
+            <version>7.6.0.28201</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- java checks testkit -->
+        <dependency>
+            <groupId>org.sonarsource.java</groupId>
+            <artifactId>java-checks-testkit</artifactId>
+            <version>7.6.0.28201</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- debugging -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
         </dependency>
+        <!-- sonar java frontend -->
+        <dependency>
+            <groupId>org.sonarsource.java</groupId>
+            <artifactId>java-frontend</artifactId>
+            <version>7.6.0.28201</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- assertj -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.21.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
     <build>
-
-        <finalName>spring-boot-web</finalName>
-
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-                 
-  <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>sonar-maven-plugin</artifactId>
-    <version>3.0.2</version>
-</plugin>
-                        <plugin>
-                                <groupId>org.sonarsource.scanner.maven</groupId>
-                                <artifactId>sonar-maven-plugin</artifactId>
-                                <version>3.7.0.1746</version>
-                        </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
+                <artifactId>sonar-packaging-maven-plugin</artifactId>
+                <version>1.18.0.372</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <pluginKey>chait-java-custom</pluginKey>
+                    <pluginDescription>Java custom rules written by chait</pluginDescription>
+                    <!-- the entry-point class that extends org.sonar.api.SonarPlugin -->
+                    <pluginClass>com.example.sonar.ChaitJavaRulesPlugin</pluginClass>
+                    <sonarLintSupported>true</sonarLintSupported>
+                    <sonarQubeMinVersion>${sonarqube.version}</sonarQubeMinVersion>
+<!--                    <requirePlugins>java:${sonarjava.version}</requirePlugins>-->
+
+                    <!-- advanced properties can be set here. See paragraph "Advanced Build Properties". -->
                 </configuration>
             </plugin>
-            <plugin>
-                                <groupId>org.jacoco</groupId>
-                                <artifactId>jacoco-maven-plugin</artifactId>
-                                <version>0.8.5</version>
-                                <executions>
-                                        <execution>
-                                                <id>pre-test</id>
-                                                <goals>
-                                                        <goal>prepare-agent</goal>
-                                                </goals>
-                                                <configuration>
-                                                        <propertyName>jacocoArgLine</propertyName>
-                                                        <destFile>${project.test.result.directory}/jacoco/jacoco.exec</destFile>
-                                                </configuration>
-                                        </execution>
-                                        <execution>
-                                                <id>post-test</id>
-                                                <phase>test</phase>
-                                                <goals>
-                                                        <goal>report</goal>
-                                                </goals>
-                                                <configuration>
-                                                        <dataFile>${project.test.result.directory}/jacoco/jacoco.exec</dataFile>
-                                                        <outputDirectory>${project.test.result.directory}/jacoco</outputDirectory>
-                                                </configuration>
-                                        </execution>
-                                </executions>
-                        </plugin>
         </plugins>
     </build>
 </project>
