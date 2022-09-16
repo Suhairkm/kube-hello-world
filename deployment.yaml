@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: hello-world-pod
-        image: abyalias/repo123:latest
+        image: abyalias/task1:latest
         ports: 
         - containerPort: 80
         - containerPort: 443
