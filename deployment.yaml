@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: hello-world-pod
-        image: suhair22/shr1docker:version
+        image: suhair22/shr1docker:latest
         ports: 
         - containerPort: 80
         - containerPort: 443
